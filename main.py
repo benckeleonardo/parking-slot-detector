@@ -3,7 +3,7 @@ import numpy as np
 
 
 def main():
-    empty_background = cv2.imread('empty_frame.png')
+    empty_frame = cv2.imread('empty_frame.png')
     cap = cv2.VideoCapture('assets/Estacionamento.mp4')
     if not cap.isOpened():
         print("Error opening video file")
@@ -19,10 +19,15 @@ def main():
                 print("Could not read the frame. Exiting...")
                 break
 
-            gray_empty = cv2.cvtColor(empty_background, cv2.COLOR_BGR2GRAY)
-            gray_current = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            difference = cv2.absdiff(gray_empty, gray_current)
-            _, thresh = cv2.threshold(difference, 10, 255, cv2.THRESH_BINARY_INV)
+            gray_empty = cv2.cvtColor(empty_frame, cv2.COLOR_BGR2GRAY)
+            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            diff = cv2.absdiff(gray_empty, gray_frame)
+            _, thresh = cv2.threshold(diff, 10, 255, cv2.THRESH_BINARY)
+
+            kernel = np.ones((5, 5), np.uint8)
+            thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)  # Remove pequenos ruídos
+            thresh = cv2.morphologyEx(thresh, cv2.MORPH_DILATE, kernel)  # Aumenta as áreas detectadas
+
 
             contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
