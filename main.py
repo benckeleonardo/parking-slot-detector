@@ -3,7 +3,7 @@ import numpy as np
 
 
 def load_resources():
-    empty_frame = cv2.imread('empty_frame.png')
+    empty_frame = cv2.imread('assets/empty_frame.png')
     cap = cv2.VideoCapture('assets/Estacionamento.mp4')
     if not cap.isOpened():
         print("Error opening video file")
